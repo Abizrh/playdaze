@@ -7,25 +7,22 @@ export const GameWrapper = ({ gamePath }: { gamePath: string }) => {
     const loadGame = async () => {
       if (!gameContainerRef.current) return;
 
-      // Kosongkan container sebelum memuat game baru
       gameContainerRef.current.innerHTML = "";
 
       try {
-        // Ambil HTML dari game
         const response = await fetch(`/games/${gamePath}/index.html`);
         const html = await response.text();
 
         // Inject HTML ke dalam container
         gameContainerRef.current.innerHTML = html;
 
-        // Cari semua script di dalam HTML dan load ulang mereka
         const scripts = gameContainerRef.current.querySelectorAll("script");
         scripts.forEach((oldScript) => {
           const newScript = document.createElement("script");
           if (oldScript.src) {
-            newScript.src = oldScript.src; // Load external scripts
+            newScript.src = oldScript.src;
           } else {
-            newScript.textContent = oldScript.textContent; // Inline scripts
+            newScript.textContent = oldScript.textContent;
           }
           newScript.async = true;
           oldScript.replaceWith(newScript);
@@ -38,7 +35,6 @@ export const GameWrapper = ({ gamePath }: { gamePath: string }) => {
     loadGame();
 
     return () => {
-      // Bersihkan container saat unmount
       if (gameContainerRef.current) {
         gameContainerRef.current.innerHTML = "";
       }
